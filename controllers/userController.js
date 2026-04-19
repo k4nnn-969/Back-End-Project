@@ -1,38 +1,26 @@
-let users = [];
+const User = require("../models/User");
 
-// POST /users
-const createUser = (req, res) => {
+// POST
+const createUser = async (req, res) => {
   const { name, email } = req.body;
 
-  const newUser = {
-    id: users.length + 1,
-    name,
-    email
-  };
+  const newUser = await User.create({ name, email });
 
-  users.push(newUser);
-
-  res.json({
-    message: "User berhasil dibuat",
-    data: newUser
-  });
+  res.json(newUser);
 };
 
-// GET /users
-const getAllUsers = (req, res) => {
+// GET ALL
+const getAllUsers = async (req, res) => {
+  const users = await User.find();
   res.json(users);
 };
 
-// GET /users/:id
-const getUserById = (req, res) => {
-  const id = parseInt(req.params.id);
-
-  const user = users.find(u => u.id === id);
+// GET BY ID
+const getUserById = async (req, res) => {
+  const user = await User.findById(req.params.id);
 
   if (!user) {
-    return res.status(404).json({
-      message: "User tidak ditemukan"
-    });
+    return res.status(404).json({ message: "User tidak ditemukan" });
   }
 
   res.json(user);
@@ -40,6 +28,6 @@ const getUserById = (req, res) => {
 
 module.exports = {
   createUser,
-  getUserById,
-  getAllUsers
+  getAllUsers,
+  getUserById
 };
